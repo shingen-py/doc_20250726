@@ -24,8 +24,8 @@ FastAPI は、Python で Web API を素早く簡単に構築できるフレー�
 作業用のディレクトリを作成し、移動します：
 
 ```bash
-mkdir fastapi-connpass-app
-cd fastapi-connpass-app
+mkdir my-fastapi-app
+cd my-fastapi-app
 ```
 この中で Python プロジェクトを構築していきます。
 
@@ -47,7 +47,7 @@ python -m venv .venv
 FastAPI および API呼び出し用の httpx、開発用サーバー uvicorn をインストールします。
 
 ```bash
-pip install fastapi httpx uvicorn python-dotenv
+pip install fastapi httpx uvicorn
 ```
 ※ uvicorn は FastAPI アプリを起動するためのサーバーです。
 

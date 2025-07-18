@@ -71,12 +71,34 @@ http GET https://connpass.com/api/v2/events/ keyword==Python count==1 "X-API-Key
 
 ## 📦 1-4. PythonでAPIを呼び出す
 
-### 🔧 必要なライブラリをインストール
-まずはAPIを呼び出すために、Pythonのライブラリ httpx をインストールします。
+### 作業ディレクトリの準備
+作業用のディレクトリを作成し、移動します：
 
 ```bash
-pip install httpx
-pip install python-dotenv
+mkdir try-connpass-api
+cd try-connpass-api
+```
+この中で Python プロジェクトを構築していきます。
+
+### 仮想環境の作成
+仮想環境を作成し、他のプロジェクトと依存パッケージが混ざらないようにします。
+
+✅ macOS / Linux の場合
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+✅ Windows の場合（PowerShell）
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+### 🔧 必要なライブラリをインストール
+まずはAPIを呼び出すために、Pythonのライブラリ httpx、`.env` ファイルを読み込むためのライブラリ python-dotenv をインストールします。
+
+```bash
+pip install httpx python-dotenv
 ```
 
 ### 🔐 APIキーの安全な管理：`.env` ファイルを使おう
@@ -89,6 +111,7 @@ APIキーは直接コードに書くのではなく、`.env` ファイルを使�
 ```ini
 CONNPASS_API_KEY=あなたのAPIキー
 ```
+🔐 注意：APIキーを自分のものに置き換えてください
 
 以下のコードで、`.env` ファイルから API キーを読み込むことができます。
 
@@ -102,13 +125,14 @@ API_KEY = os.getenv("CONNPASS_API_KEY")
 ```
 
 ### 🧪 connpass API を叩いてみよう（サンプルコード）
-以下のコードを try_connpass_api.py という名前で保存して、実行してみましょう。
+以下のコードを main.py という名前で保存して、実行してみましょう。
 
-🔐 注意：APIキーを自分のものに置き換えてください
 ```python
 import httpx
 from dotenv import load_dotenv
+import os
 import pprint  # 見やすく出力するためのモジュール
+load_dotenv()
 
 # APIキーを環境変数から取得
 API_KEY = os.getenv("CONNPASS_API_KEY")
@@ -116,9 +140,9 @@ API_KEY = os.getenv("CONNPASS_API_KEY")
 # connpass API v2 の URL
 url = "https://connpass.com/api/v2/events/"
 
-# 検索条件（キーワード: Python）
+# 検索条件（キーワード: 山梨県立図書館）
 params = {
-    "keyword": "Python",
+    "keyword": "山梨県立図書館",
     "count": 3  # 取得件数
 }
 
@@ -130,9 +154,6 @@ headers = {
 # リクエスト送信
 response = httpx.get(url, params=params, headers=headers)
 
-# 結果のステータスコードを表示
-print("ステータスコード:", response.status_code)
-
 # レスポンスの JSON を整形して出力
 if response.status_code == 200:
     data = response.json()
@@ -141,20 +162,20 @@ else:
     print("エラーが発生しました:", response.text)
 ```
 
+実行方法
+```bash
+python main.py
+```
+
 ### 実行結果の見方
 実行すると、以下のような出力が得られます（一部抜粋）：
 
 ```json
-{
-  'results_start': 1,
-  'results_returned': 3,
-  'events': [
-    {
-      'event_id': 123456,
-      'title': 'Pythonもくもく会@甲府',
-      'started_at': '2025-07-01T19:00:00+09:00',
-      'place': '甲府市○○',
-      'event_url': 'https://connpass.com/event/123456/',
+{'events': [{'accepted': 7,
+             'address': '山梨県甲府市北口２丁目８−１ 山梨県立図書館',
+             'catch': '毎月最終日曜日に開催している山梨のもくもく会！',
+             'description': '<p>山梨開催のもくもく会、 <strong>甲斐国（かいのくに）もくもく会</strong> '
+                            'です！\n'
       ...
     },
     ...
