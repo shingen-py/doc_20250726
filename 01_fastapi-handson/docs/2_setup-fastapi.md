@@ -24,8 +24,8 @@ FastAPI は、Python で Web API を素早く簡単に構築できるフレー�
 作業用のディレクトリを作成し、移動します：
 
 ```bash
-mkdir my-fastapi-app
-cd my-fastapi-app
+mkdir hello-fastapi
+cd hello-fastapi
 ```
 この中で Python プロジェクトを構築していきます。
 
@@ -41,6 +41,11 @@ source .venv/bin/activate
 ```powershell
 python -m venv .venv
 .venv\Scripts\activate
+```
+
+仮想環境の解除方法：
+```bash
+deactivate
 ```
 
 ## 📦 2-4. ライブラリのインストール
@@ -93,6 +98,74 @@ FastAPI は、自動的に API ドキュメントを生成してくれます。
 
 Swagger UI と呼ばれるこの画面は、API 開発・テストにとても便利です。
 
+## 📥 2-8. FastAPI で扱う3種類のパラメータ
+FastAPI では、API を通じて受け取る値の定義が非常に簡潔です。  
+ここでは、以下の3つのパラメータの受け取り方法を学びます。
+
+### 🧭 2-8-1. パスパラメータ（Path Parameter）
+URL の一部として値を渡す方法です。  
+たとえば `/users/1` のように、ユーザーIDを URL の一部として受け取ります。
+
+📄 `main.py` に追記：
+```python
+@app.get("/users/{user_id}")
+async def get_user(user_id: int):
+    return {"user_id": user_id}
+```
+→ `/users/123` にアクセスすると `{"user_id": 123}` が返ります。
+
+### 🔍 2-8-2. クエリパラメータ（Query Parameter）
+`/search?keyword=python` のように、`?` のあとに続く形式のパラメータです。
+
+📄 `main.py` に追記：
+```python
+@app.get("/search")
+async def search(keyword: str = "default"):
+    return {"keyword": keyword}
+```
+
+→ `/search?keyword=fastapi` にアクセスすると `{"keyword": "fastapi"}` が返ります。
+
+### 📨 2-8-3. ボディパラメータ（Request Body）
+POST リクエストなどで、JSON データなどをリクエストボディとして送信します。
+
+📄 `main.py` に追記：
+```python
+from pydantic import BaseModel
+
+class Item(BaseModel):
+    name: str
+    price: float
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return {"name": item.name, "price": item.price}
+```
+
+このエンドポイントには、次のような JSON を POST で送信します：
+```json
+{
+  "name": "マグカップ",
+  "price": 1200
+}
+```
+→ レスポンス: `{"name": "マグカップ", "price": 1200}`
+
+Swagger UI からも試せます！
+
+### 💡 2-8-4. 補足：パラメータの使い分けガイド
+FastAPI では、以下のようにパラメータの使いどころを分けて設計すると自然です。
+
+| 種類 | 使う場面 | 具体例 | 備考 |
+| ---- | ---- | ---- | ---- |
+| **パスパラメータ** | **リソースを一意に識別する時** | `/users/42` → ユーザーID:42 | 「何を操作するか」を示すときに使う |
+| **クエリパラメータ** | **検索条件やオプション指定** | `/search?keyword=python&limit=5` | 「どう検索するか」や「並び順」など |
+| **ボディパラメータ** | **データを新規作成・更新するとき** | POST `/items` に JSON を送信 | 複数の項目をまとめて渡すのに向いている |
+
+> 🧭 ちなみに…
+こうした設計は「REST API」という考え方に基づいています。  
+本ハンズオンではそこまで深入りしませんが、興味がある人は「REST API 設計」などのキーワードで調べてみてください！
+
 ## ❓ よくあるトラブルと対処法
 
 | 状況 | 対処法 |
@@ -106,6 +179,7 @@ Swagger UI と呼ばれるこの画面は、API 開発・テストにとても�
 * FastAPI の基本構成と、起動手順を理解しました
 * 最小の API エンドポイント /hello を動かすことができました
 * Swagger UI によって、視覚的に API を確認する方法を学びました
+* FastAPI で扱える3種類のパラメータ（パス・クエリ・ボディ）を使って API を作成しました
 
 次章では、いよいよ connpass API v2 を FastAPI アプリの中から呼び出し、自作の API サーバを完成させていきます！
 
