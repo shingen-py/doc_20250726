@@ -2,13 +2,15 @@ import httpx
 from dotenv import load_dotenv
 import os
 import pprint  # 見やすく出力するためのモジュール
-load_dotenv()
+
+load_dotenv()  # .env ファイルを読み込む
 
 # APIキーを環境変数から取得
 API_KEY = os.getenv("CONNPASS_API_KEY")
 
 # connpass API v2 の URL
-url = "https://connpass.com/api/v2/events/"
+# url = "https://connpass.com/api/v2/events/"
+url = "https://proxy01.yamanashi.dev/events/"
 
 # 検索条件（キーワード: Python）
 params = {

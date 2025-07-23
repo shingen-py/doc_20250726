@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>イベント検索</title>
+</head>
+<body>
+  <h1>イベント検索</h1>
+
+  <label>
+    キーワード:
+    <input id="kw" placeholder="例: Python" />
+  </label>
+
+  <label>
+    都道府県:
+    <select id="pref">
+      <option value="">--選択してください--</option>
+      <option value="yamanashi">山梨県</option>
+      <option value="tokyo">東京都</option>
+      <option value="shizuoka">静岡県</option>
+      <option value="nagano">長野県</option>
+    </select>
+  </label>
+
+  <label>
+    グループ:
+    <select id="subdomain">
+      <option value="">--選択してください--</option>
+      <option value="shingenpy">shingen.py</option>
+      <option value="jaws-ug-yamanashi">JAWS-UG山梨</option>
+      <option value="kainokuni">甲斐国もくもく会</option>
+      <option value="coderdojokofu">コーダー道場甲府</option>
+      <option value="houtoupm">Houtou.pm</option>
+      <option value="kofurb">Kofu.rb</option>
+      <option value="ai-meetup">東京-山梨 AI ミートアップ</option>
+    </select>
+  </label>
+
+  <label>
+    件数:
+    <select id="limit">
+      <option value="5">5件</option>
+      <option value="10" selected>10件</option>
+      <option value="20">20件</option>
+      <option value="50">50件</option>
+    </select>
+  </label>
+
+  <button onclick="search()">検索</button>
+
+  <ul id="results"></ul>
+
+  <script>
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("ja-JP", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        weekday: "short"
+      });
+    }
+
+    async function search() {
+      const kw = document.getElementById('kw').value;
+      const pref = document.getElementById('pref').value;
+      const subdomain = document.getElementById('subdomain').value;
+      const limit = document.getElementById('limit').value;
+
+      const res = await fetch('http://localhost:8000/events/filter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          keyword: kw,
+          prefecture: pref,
+          subdomain: subdomain,
+          limit: Number(limit)
+        })
+      });
+
+      const data = await res.json();
+      const ul = document.getElementById('results');
+      ul.innerHTML = "";
+      data.forEach((e) => {
+        const dateStr = formatDate(e.started_at);
+        const li = document.createElement("li");
+        li.innerHTML = `${dateStr} - <a href="${e.url}" target="_blank">${e.title}</a>（${e.place ?? '場所未定'}）`;
+        ul.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>

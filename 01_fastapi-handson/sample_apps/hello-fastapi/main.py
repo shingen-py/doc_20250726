@@ -4,11 +4,6 @@ from pydantic import BaseModel
 app = FastAPI()
 
 
-class Item(BaseModel):
-    name: str
-    price: float
-
-
 @app.get("/hello")
 async def say_hello():
     return {"message": "こんにちは、FastAPI！"}
@@ -16,14 +11,36 @@ async def say_hello():
 
 @app.get("/users/{user_id}")
 async def get_user(user_id: int):
-    # 例として、パスパラメータのユーザIDをそのまま返す
-    return {"user_id": user_id}
+    # ダミーのユーザーリスト
+    user_list = [
+        {"user_id": 1, "name": "安藤"},
+        {"user_id": 2, "name": "伊藤"},
+        {"user_id": 3, "name": "遠藤"},
+        {"user_id": 4, "name": "加藤"},
+        {"user_id": 5, "name": "武藤"}
+    ]
+    # ユーザーIDに一致するユーザーを検索
+    for user in user_list:
+        if user["user_id"] == user_id:
+            # ユーザーが見つかった場合、ユーザーデータを返す
+            return user
+
+    # ユーザーが見つからない場合
+    return {"error": "User not found"}
 
 
 @app.get("/search")
 async def search(keyword: str = "default"):
     # 例として、クエリパラメータのキーワードをそのまま返す
     return {"keyword": keyword}
+
+
+class Item(BaseModel):
+    """
+    アイテムのモデル
+    """
+    name: str
+    price: float
 
 
 @app.post("/items/")
