@@ -1,25 +1,22 @@
-# 📘 第4章：APIを実際に使ってみる体験（Webフロント × Node.js）
+# 📘 第4章：APIを実際に使ってみる（Webフロント）
+🕒本章の作業時間：15分
 
 ## 🎯 この章の目的
-これまでに構築した FastAPI API が、実際の Web アプリケーションからどのように利用されるのかを体験します。\
-今回は、HTML+JavaScript（fetch）で構築した Web フロントエンドを、Node.js + Express サーバーで配信し、FastAPI の API を呼び出す構成で進めます。
+構築した FastAPI の API を、Webブラウザ上の HTML + JavaScript アプリケーションから実際に使ってみます。  
+この章では、**Python の標準モジュール `http.server` を用いて、HTML ファイルをローカル配信**する方法で進めます。
 
 ### この章で得られること
 
-* **Web アプリケーションから API を使う流れ**を体験
-* **Node.js を使った軽量なローカル Web サーバー構成**を知る
-* **ユーザー操作（都道府県選択＋検索）→ API 呼び出し → 結果表示**の流れを学ぶ
+* Web フロントから API を使う体験
+* HTML/JS のフォーム UI から fetch を通じて API を呼び出す流れの理解
+* API の利用場面（検索アプリ）を通じて「作って終わりではない」ことを実感
 
 ## 🧭 システム構成図
 
 ```plaintext
 [ブラウザ]
    |
-   | fetch /api/search
-   v
-[Node.js + Express (http://localhost:3000)]
-   |
-   | fetch /events/filter
+   | fetch http://localhost:8000/events/filter
    v
 [FastAPI (http://localhost:8000)]
 ```
@@ -27,57 +24,13 @@
 ## 🧱 ディレクトリ構成
 
 ```plaintext
-node-client/
-├── index.js          ← Node.js サーバー
-└── public/
-    └── index.html    ← HTML + JavaScript
+my-event-frontend/
+└── index.html        ← HTML + JavaScript
 ```
 
-## 🛠 セットアップ
+## 📄 index.html
+以下の内容を `my-event-frontend/index.html` に保存してください：
 
-```bash
-mkdir node-client
-cd node-client
-npm init -y
-npm install express node-fetch
-```
-
-## 📄 index.js（Node.js + Express サーバー）
-
-```js
-const express = require('express');
-const fetch = require('node-fetch');
-const path = require('path');
-
-const app = express();
-const PORT = 3000;
-const FASTAPI = 'http://localhost:8000';
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
-
-// POST /api/search → FastAPI の /events/filter に転送
-app.post('/api/search', async (req, res) => {
-  try {
-    const response = await fetch(`${FASTAPI}/events/filter`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body)
-    });
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error('API呼び出し失敗:', err);
-    res.status(500).send('検索に失敗しました');
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`✅ Webサーバー起動：http://localhost:${PORT}`);
-});
-```
-
-## 📄 public/index.html（都道府県選択付き検索UI）
 ```html
 <!DOCTYPE html>
 <html lang="ja">
@@ -86,7 +39,7 @@ app.listen(PORT, () => {
   <title>イベント検索</title>
 </head>
 <body>
-  <h1>イベント検索（都道府県付き）</h1>
+  <h1>イベント検索</h1>
 
   <label>
     キーワード:
@@ -97,10 +50,34 @@ app.listen(PORT, () => {
     都道府県:
     <select id="pref">
       <option value="">--選択してください--</option>
-      <option value="山梨">山梨</option>
-      <option value="東京">東京</option>
-      <option value="大阪">大阪</option>
-      <!-- 必要に応じて他の県も追加 -->
+      <option value="yamanashi">山梨県</option>
+      <option value="tokyo">東京都</option>
+      <option value="shizuoka">静岡県</option>
+      <option value="nagano">長野県</option>
+    </select>
+  </label>
+
+  <label>
+    グループ:
+    <select id="subdomain">
+      <option value="">--選択してください--</option>
+      <option value="shingenpy">shingen.py</option>
+      <option value="jaws-ug-yamanashi">JAWS-UG山梨</option>
+      <option value="kainokuni">甲斐国もくもく会</option>
+      <option value="coderdojokofu">コーダー道場甲府</option>
+      <option value="houtoupm">Houtou.pm</option>
+      <option value="kofurb">Kofu.rb</option>
+      <option value="ai-meetup">東京-山梨 AI ミートアップ</option>
+    </select>
+  </label>
+
+  <label>
+    件数:
+    <select id="limit">
+      <option value="5">5件</option>
+      <option value="10" selected>10件</option>
+      <option value="20">20件</option>
+      <option value="50">50件</option>
     </select>
   </label>
 
@@ -109,27 +86,40 @@ app.listen(PORT, () => {
   <ul id="results"></ul>
 
   <script>
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("ja-JP", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        weekday: "short"
+      });
+    }
+
     async function search() {
       const kw = document.getElementById('kw').value;
       const pref = document.getElementById('pref').value;
+      const subdomain = document.getElementById('subdomain').value;
+      const limit = document.getElementById('limit').value;
 
-      const res = await fetch('/api/search', {
+      const res = await fetch('http://localhost:8000/events/filter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           keyword: kw,
           prefecture: pref,
-          count: 10,
-          view: 'simple'
+          subdomain: subdomain,
+          limit: Number(limit)
         })
       });
 
       const data = await res.json();
       const ul = document.getElementById('results');
       ul.innerHTML = "";
-      data.results.forEach((e) => {
+      data.forEach((e) => {
+        const dateStr = formatDate(e.started_at);
         const li = document.createElement("li");
-        li.innerHTML = `<a href="${e.url}" target="_blank">${e.title}</a>（${e.place ?? '場所未定'}）`;
+        li.innerHTML = `${dateStr} - <a href="${e.url}" target="_blank">${e.title}</a>（${e.place ?? '場所未定'}）`;
         ul.appendChild(li);
       });
     }
@@ -140,28 +130,38 @@ app.listen(PORT, () => {
 
 ## ✅ 動作手順
 
-FastAPI サーバーを起動
+### ① FastAPI サーバーを起動
+第3章で作成した FastAPI サーバーを起動します。
 ```bash
-vicorn main:app --reload
+cd my-event-api
+uvicorn main:app --reload
 ```
 
-Node.js サーバーを起動
+### ② HTML ファイルをローカル配信（別ターミナルから）
 ```bash
-node index.js
+cd my-event-frontend
+python3 -m http.server 3000
 ```
 
-ブラウザでアクセス
-```
-http://localhost:3000
-```
+### ③ ブラウザで検索体験！
+
+* ブラウザで `http://localhost:3000` を開く
+* 都道府県やグループを選択して検索
+* FastAPI を通じて connpass API のデータが表示される 🎉
+
+!![イベント検索画面](images/event-app-sample.png)
+
+## 🧩 CORS（クロスオリジン）への補足
+* `http://localhost:3000`（HTML）から `http://localhost:8000`（API）を呼ぶため、クロスオリジン通信になります
+* FastAPI 側で CORS 対応が必要です（第3章ですでに対応済）
 
 ## ✅ この章のまとめ
 
-* Web フロントからの API 利用方法を体験しました
-* UI操作（キーワード + 都道府県選択）と API を連携させた検索機能を実装しました
-* Node.js の役割（静的ファイルの配信と API プロキシ）を理解しました
-* 「API を作るだけでなく、使ってもらう設計」が重要であることを学びました
+* HTML + JavaScript で作られた Web フロントから FastAPI の API を呼び出す体験をしました
+* Python 標準モジュール http.server によるローカル配信を通じて、HTML ファイルをブラウザで表示しました
+* API の実用性（検索連携）を目で見て確認できました
+* 今後の公開時（例：AWS Lambda）に向けて CORS の重要性にも触れました
 
 次章では、ここまでのハンズオンの振り返りと、FastAPIやAPI構築を今後どのように活かしていくかを考えます。
 
-👉 次に進む：[第5章：振り返りと今後のステップ）](5_summary.md)
+👉 次に進む：[第5章：まとめと今後のステップ）](5_summary.md)

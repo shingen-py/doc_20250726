@@ -12,7 +12,7 @@ API_KEY = os.getenv("CONNPASS_API_KEY")
 # url = "https://connpass.com/api/v2/events/"
 url = "https://proxy01.yamanashi.dev/events/"
 
-# 検索条件（キーワード: Python）
+# 検索条件（キーワード: 山梨県立図書館）
 params = {
     "keyword": "山梨県立図書館",
     "count": 3  # 取得件数

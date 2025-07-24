@@ -1,4 +1,5 @@
 # 📘 第2章：FastAPI 環境の準備
+🕒本章の作業時間：15分
 
 ## 🎯 この章の目的
 この章では、FastAPI を使って API サーバーを構築するための準備を行います。
@@ -13,12 +14,21 @@
 FastAPI は、Python で Web API を素早く簡単に構築できるフレームワークです。\
 以下のような特徴があります：
 
-| 特徴 | 内容 |
-| ---- | ---- |
-| 高速 | 非同期対応（`async`）で高速 |
-| 型ヒント対応 | Python の型ヒントを活かして自動でバリデーションが可能 |
-| ドキュメント自動生成 | OpenAPI / Swagger に対応し、ブラウザ上でAPIを操作できる画面が生成される |
-| 学習コストが低い | Python の基本文法がわかれば使い始められる |
+* **高速**：
+  * 非同期処理に対応しており、非常に高いパフォーマンスを発揮します。
+* **型ヒント対応**：
+  * Python の型ヒントを活かして、リクエストやレスポンスのバリデーションが自動で行えます。
+* **ドキュメント自動生成**：
+  * OpenAPI / Swagger に対応し、ブラウザ上で API を操作できる画面が自動生成されます。
+* **学習コストが低い**：
+  * Python の基本文法がわかればすぐに使い始められます。
+
+### 👩🏻‍💻もっと知りたい方へ
+Shingen.py では、過去に FastAPI のワークショップを実施しています。  
+
+* [FastAPI でハジメルPython](https://shingenpy.connpass.com/event/213263/) 2021/06/17(木)開催
+  * [スライド資料](https://www.slideshare.net/slideshow/start-python-with-fastapi/249422898)
+  * [ドキュメント/サンプルコード](https://github.com/shingenpy/fastapi_workshop)
 
 ## 🧰 2-2. 作業ディレクトリの準備
 作業用のディレクトリを作成し、移動します：
@@ -29,26 +39,7 @@ cd hello-fastapi
 ```
 この中で Python プロジェクトを構築していきます。
 
-## 🐍 2-3. 仮想環境の作成
-仮想環境を作成し、他のプロジェクトと依存パッケージが混ざらないようにします。
-
-✅ macOS / Linux の場合
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-✅ Windows の場合（PowerShell）
-```powershell
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-仮想環境の解除方法：
-```bash
-deactivate
-```
-
-## 📦 2-4. ライブラリのインストール
+## 📦 2-3. ライブラリのインストール
 FastAPI および API呼び出し用の httpx、開発用サーバー uvicorn をインストールします。
 
 ```bash
@@ -56,7 +47,7 @@ pip install fastapi httpx uvicorn
 ```
 ※ uvicorn は FastAPI アプリを起動するためのサーバーです。
 
-## 📄 2-5. 最小の FastAPI アプリを作ってみよう
+## 📄 2-4. 最小の FastAPI アプリを作ってみよう
 エディタ（VS Code など）で main.py というファイルを作成し、以下のコードを入力します。
 
 📄 main.py
@@ -71,7 +62,7 @@ async def say_hello():
 ```
 このコードは、/hello というURLにアクセスすると「こんにちは、FastAPI！」という JSON を返すだけの最小構成です。
 
-## 🚀 2-6. FastAPI アプリを起動する
+## 🚀 2-5. FastAPI アプリを起動する
 ターミナルで次のコマンドを実行して、FastAPI アプリを起動します。
 
 ```bash
@@ -87,7 +78,7 @@ INFO:     Uvicorn running on http://127.0.0.1:8000
 * http://127.0.0.1:8000/hello
 → JSON で {"message": "こんにちは、FastAPI！"} が表示されれば成功です。
 
-## 🧪 2-7. Swagger UI を試す
+## 🧪 2-6. Swagger UI を試す
 FastAPI は、自動的に API ドキュメントを生成してくれます。
 
 ブラウザで以下のURLにアクセスしてみましょう：
@@ -98,11 +89,13 @@ FastAPI は、自動的に API ドキュメントを生成してくれます。
 
 Swagger UI と呼ばれるこの画面は、API 開発・テストにとても便利です。
 
-## 📥 2-8. FastAPI で扱う3種類のパラメータ
+![Swagger UI](images/swagger-ui.png)
+
+## 📥 2-7. FastAPI で扱う3種類のパラメータ
 FastAPI では、API を通じて受け取る値の定義が非常に簡潔です。  
 ここでは、以下の3つのパラメータの受け取り方法を学びます。
 
-### 🧭 2-8-1. パスパラメータ（Path Parameter）
+### 🧭 2-7-1. パスパラメータ（Path Parameter）
 URL の一部として値を渡す方法です。  
 たとえば `/users/1` のように、ユーザーIDを URL の一部として受け取ります。
 
@@ -114,7 +107,7 @@ async def get_user(user_id: int):
 ```
 → `/users/123` にアクセスすると `{"user_id": 123}` が返ります。
 
-### 🔍 2-8-2. クエリパラメータ（Query Parameter）
+### 🔍 2-7-2. クエリパラメータ（Query Parameter）
 `/search?keyword=python` のように、`?` のあとに続く形式のパラメータです。
 
 📄 `main.py` に追記：
@@ -126,7 +119,7 @@ async def search(keyword: str = "default"):
 
 → `/search?keyword=fastapi` にアクセスすると `{"keyword": "fastapi"}` が返ります。
 
-### 📨 2-8-3. ボディパラメータ（Request Body）
+### 📨 2-7-3. ボディパラメータ（Request Body）
 POST リクエストなどで、JSON データなどをリクエストボディとして送信します。
 
 📄 `main.py` に追記：
@@ -153,7 +146,7 @@ async def create_item(item: Item):
 
 Swagger UI からも試せます！
 
-### 💡 2-8-4. 補足：パラメータの使い分けガイド
+### 💡 2-7-4. 補足：パラメータの使い分けガイド
 FastAPI では、以下のようにパラメータの使いどころを分けて設計すると自然です。
 
 | 種類 | 使う場面 | 具体例 | 備考 |
