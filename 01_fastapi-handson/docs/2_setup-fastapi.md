@@ -45,6 +45,11 @@ FastAPI および API呼び出し用の httpx、開発用サーバー uvicorn �
 ```bash
 pip install fastapi httpx uvicorn
 ```
+または
+```bash
+pip install "fastapi[all]"
+```
+
 ※ uvicorn は FastAPI アプリを起動するためのサーバーです。
 
 ## 📄 2-4. 最小の FastAPI アプリを作ってみよう

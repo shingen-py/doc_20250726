@@ -20,6 +20,8 @@
 * データ形式：JSON
 * 利用制限：1秒に1回までのリクエスト（Rate limit）
 
+APIの利用申請方法は公式ページに案内があります（ https://connpass.com/about/api/v2/ ）
+
 ### connpass API で取得できるデータ
 
 | エンドポイント | 説明 | 取得できる情報 |
@@ -31,8 +33,6 @@
 | `/users/{nickname}/groups/` | ユーザーが所属するグループ情報 | グループ名、概要、主催者など |
 | `/users/{nickname}/attended_events/` | ユーザーが参加したイベント情報 | イベント名、日時、場所など |
 | `/users/{nickname}/presenter_events/` | ユーザーが発表したイベント情報 | イ   ベント名、日時、場所など |
-
-APIの利用申請方法は公式ページに案内があります（ https://connpass.com/about/api/v2/ ）
 
 ### 本日の勉強会での利用環境について
 * 本日の勉強会では、事前に Shingen.py で connpass に申請済みのAPIキーを使用して connpass API を実行します。
@@ -70,12 +70,12 @@ curl はほとんどの OS に標準で入っているコマンドラインツ�
 ```bash
 curl -H "X-API-Key: あなたのAPIキー" "URL"
 ```
-✅ 実行例（APIキーを仮に `abcd1234` とした場合）
+✅ 実行例①：イベントを取得（APIキーを仮に `abcd1234` とした場合）
 ```bash
 curl -H "X-API-Key: abcd1234" "https://proxy01.yamanashi.dev/events/?keyword=Python&count=1"
 ```
 📌 うまくいくと…
-```json
+```text
 {"results_start":1,"results_returned":1,"results_available":1234,"events":[{"event_id":...}]}
 ```
 ❗失敗例（APIキーなし）
@@ -86,6 +86,17 @@ curl "https://proxy01.yamanashi.dev/events/?keyword=Python"
 {"error":"Unauthorized"}
 ```
 X-API-Key ヘッダーを付けないと、401 Unauthorized（認証エラー）になります。
+
+✅ 実行例②：特定のユーザーが参加しているイベントを取得（APIキーを仮に `abcd1234` とした場合）
+```bash
+curl -H "X-API-Key: abcd1234" "https://proxy01.yamanashi.dev/users/yuukis/attended_events/"
+```
+📌 うまくいくと…
+```text
+{"results_returned":10,"results_available":312,"results_start":1,"events":[{"id":354581,"title":"出張版！甲斐国もくもく会 in 北杜市 (清里/オンライン)","catch":"北杜市民の方大歓迎！廃校の小学校の教室でもくもく作業しながらの交流会","description":"<p>山梨開催のもくもく会、 <strong>甲斐国（かいのくに）もくもく会</strong> です！</p>\n<p>「もくもく会」とは、複数の人が集ま
+...
+```
+
 
 ## 📦 1-4. PythonでAPIを呼び出す
 
@@ -190,7 +201,7 @@ python main.py
 ### 1-4-6. 実行結果の見方
 実行すると、以下のような出力が得られます（一部抜粋）：
 
-```json
+```text
 {'events': [{'accepted': 7,
              'address': '山梨県甲府市北口２丁目８−１ 山梨県立図書館',
              'catch': '毎月最終日曜日に開催している山梨のもくもく会！',

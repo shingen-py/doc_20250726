@@ -39,6 +39,10 @@ FastAPI 等必要なライブラリをインストールします。
 ```bash
 pip install fastapi httpx python-dotenv uvicorn
 ```
+または
+```bash
+pip install "fastapi[all] python-dotenv
+```
 
 ## 📄 3-5. main.py（全体構成）
 以下に、FastAPI アプリ全体を構成する main.py のコードを記載します。

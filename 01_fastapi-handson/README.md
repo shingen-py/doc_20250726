@@ -12,6 +12,13 @@
 
 ---
 
+## 🚀 サンプルコード
+
+- [こちらからダウンロードください](https://github.com/shingen-py/doc_20250726/tree/main/01_fastapi-handson/sample_apps)
+
+---
+
+
 ## 🗂 目次
 
 ### [第1章：connpass API v2 の仕組みと体験](docs/1_try-connpass-api.md)(15分)
@@ -94,9 +101,7 @@ python -m http.server 3000
 
 ### 6. ブラウザでアクセス
 
-```
 http://localhost:3000
-```
 
 ---
 
