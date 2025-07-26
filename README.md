@@ -26,4 +26,4 @@ APIの開発を経験したことがない方も、実際に手を動かしな�
 
 ## AWS Lambda を使った APIサーバー公開ハンズオン
 
-- 資料リンクは後ほど追加
+- [資料はこちら](https://github.com/issei-hamada/hmddev-lambda-web-adapter-workshop)
