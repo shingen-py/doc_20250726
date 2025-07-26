@@ -41,11 +41,13 @@ pip install fastapi httpx python-dotenv uvicorn
 ```
 または
 ```bash
-pip install "fastapi[all] python-dotenv
+pip install "fastapi[all]" python-dotenv
 ```
 
 ## 📄 3-5. main.py（全体構成）
 以下に、FastAPI アプリ全体を構成する main.py のコードを記載します。
+
+- 完全版の main.py はこちらにあります：[main.py](https://github.com/shingen-py/doc_20250726/blob/main/01_fastapi-handson/sample_apps/my-event-api/main.py)
 
 ### 🔐 前提：API キー設定
 
@@ -314,7 +316,7 @@ uvicorn main:app --reload
 ```
 ブラウザで以下のURLにアクセスし、色々リクエストしてみましょう：
 
-* http://127.0.0.1:8000/docs
+* [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ![Swagger UI](images/event-api-docs.png)
 

@@ -145,7 +145,7 @@ python3 -m http.server 3000
 
 ### ③ ブラウザで検索体験！
 
-* ブラウザで `http://localhost:3000` を開く
+* ブラウザで [http://localhost:3000](http://localhost:3000) を開く
 * 都道府県やグループを選択して検索
 * FastAPI を通じて connpass API のデータが表示される 🎉
 

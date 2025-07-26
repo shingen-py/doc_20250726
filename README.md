@@ -17,9 +17,13 @@ APIの開発を経験したことがない方も、実際に手を動かしな�
 * connpass API でどんなことが出来るのか実際に試してみたい方
 * AWS Lambda を用いて、API サーバーの公開までを体験したい方
 
-開催URL: https://shingenpy.connpass.com/event/357093/
+開催URL: [https://shingenpy.connpass.com/event/357093/](https://shingenpy.connpass.com/event/357093/)
 
 ---
 ## FastAPI を使った APIサーバー構築ハンズオン
 
 - [資料はこちら](01_fastapi-handson/README.md)
+- 
+## AWS Lambda を使った APIサーバー公開ハンズオン
+
+- 資料リンクは後ほど追加

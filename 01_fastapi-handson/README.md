@@ -101,7 +101,7 @@ python -m http.server 3000
 
 ### 6. ブラウザでアクセス
 
-http://localhost:3000
+[http://localhost:3000](http://localhost:3000)
 
 ---
 
@@ -112,7 +112,7 @@ http://localhost:3000
 
 ## 📎 補足資料・リンク
 
-* connpass API v2 ドキュメント: https://connpass.com/about/api/v2/
-* FastAPI 公式: https://fastapi.tiangolo.com/
-* Shingen.py: https://shingenpy.connpass.com/
+* connpass API v2 ドキュメント: [https://connpass.com/about/api/v2/](https://connpass.com/about/api/v2/)
+* FastAPI 公式: [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
+* Shingen.py: [https://shingenpy.connpass.com/](https://shingenpy.connpass.com/)
 

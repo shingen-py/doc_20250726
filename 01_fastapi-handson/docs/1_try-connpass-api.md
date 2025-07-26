@@ -20,7 +20,7 @@
 * データ形式：JSON
 * 利用制限：1秒に1回までのリクエスト（Rate limit）
 
-APIの利用申請方法は公式ページに案内があります（ https://connpass.com/about/api/v2/ ）
+APIの利用申請方法は公式ページに案内があります（ [https://connpass.com/about/api/v2/](https://connpass.com/about/api/v2/) ）
 
 ### connpass API で取得できるデータ
 
