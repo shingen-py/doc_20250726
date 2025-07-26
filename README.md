@@ -23,7 +23,7 @@ APIの開発を経験したことがない方も、実際に手を動かしな�
 ## FastAPI を使った APIサーバー構築ハンズオン
 
 - [資料はこちら](01_fastapi-handson/README.md)
-- 
+
 ## AWS Lambda を使った APIサーバー公開ハンズオン
 
 - 資料リンクは後ほど追加
